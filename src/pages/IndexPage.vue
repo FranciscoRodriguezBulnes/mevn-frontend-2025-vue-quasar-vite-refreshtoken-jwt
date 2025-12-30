@@ -1,49 +1,25 @@
 <template>
   <q-page padding>
-    <q-btn @click="access">Acceder</q-btn>
+    <!-- <q-btn @click="userStore.access">Acceder</q-btn> -->
     <q-btn @click="createLink">Crear Link</q-btn>
-    {{ token }} - {{ expiresIn }}
+    <!-- <q-btn @click="userStore.logout">Cerrar Sesión</q-btn> -->
+    {{ userStore.token }} - {{ userStore.expiresIn }}
   </q-page>
 </template>
 
 <script setup>
 // import axios from 'axios'
 import { api } from 'src/boot/axios'
-import { ref } from 'vue'
+import { useUserStore } from 'src/stores/user-store'
 
-const token = ref('')
-const expiresIn = ref('')
+//Primero instancio el store
+const userStore = useUserStore()
 
-// const access = () => {
-//   console.log('has pulsado click')
-//   axios
-//     .post('http://localhost:5000/api/v1/auth/login', {
-//       email: 'frbacsa@gmail.com',
-//       password: 'jacobo1!',
-//     })
-//     .then((res) => {
-//       console.log(res.data)
-//     })
-//     .catch((e) => console.log(e))
-// }
+// ahora lo destructuro
+// const { token, expiresIn, access, refreshToken } = userStore
 
-const access = async () => {
-  try {
-    console.log('has pulsado click')
-    const res = await api.post('/auth/login', {
-      email: 'frbacsa@gmail.com',
-      password: 'jacobo1!',
-    })
-    // console.log(res.data)
-    token.value = res.data.token
-    expiresIn.value = res.data.expiresIn
-    setTime()
-    // console.log(token)
-    // console.log(expiresIn)
-  } catch (error) {
-    console.log(error)
-  }
-}
+// const userStore = useUserStore()
+userStore.refreshToken()
 
 const createLink = async () => {
   try {
@@ -51,7 +27,7 @@ const createLink = async () => {
       method: 'POST',
       url: '/links',
       headers: {
-        Authorization: 'Bearer ' + token.value,
+        Authorization: 'Bearer ' + userStore.token,
       },
       data: {
         longLink:
@@ -63,28 +39,7 @@ const createLink = async () => {
     console.log(error)
   }
 }
-
-const setTime = () => {
-  setTimeout(
-    () => {
-      refreshToken()
-    },
-    expiresIn.value * 1000 - 6000,
-  )
-}
-
-const refreshToken = async () => {
-  try {
-    const res = await api.get('/auth/refresh')
-    console.log(res.data)
-
-    token.value = res.data.token
-    expiresIn.value = res.data.expiresIn
-    setTime()
-  } catch (error) {
-    console.log(error)
-  }
-}
+// }
 
 // refreshToken()
 </script>
