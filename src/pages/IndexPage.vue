@@ -1,45 +1,19 @@
 <template>
   <q-page padding>
-    <!-- <q-btn @click="userStore.access">Acceder</q-btn> -->
-    <q-btn @click="createLink">Crear Link</q-btn>
-    <!-- <q-btn @click="userStore.logout">Cerrar Sesión</q-btn> -->
-    {{ userStore.token }} - {{ userStore.expiresIn }}
+    <add-link />
+    <!-- <pre>{{ JSON.stringify(useLink.links, null, 2) }}</pre> -->
+    <template v-for="link in useLink.links" :key="link._id">
+      <link-card />
+    </template>
   </q-page>
 </template>
 
 <script setup>
-// import axios from 'axios'
-import { api } from 'src/boot/axios'
-import { useUserStore } from 'src/stores/user-store'
+import { useLinkStore } from 'src/stores/link-store'
 
-//Primero instancio el store
-const userStore = useUserStore()
+// components
+import AddLink from 'src/components/AddLink.vue'
+import LinkCard from 'src/components/LinkCard.vue'
 
-// ahora lo destructuro
-// const { token, expiresIn, access, refreshToken } = userStore
-
-// const userStore = useUserStore()
-userStore.refreshToken()
-
-const createLink = async () => {
-  try {
-    const res = await api({
-      method: 'POST',
-      url: '/links',
-      headers: {
-        Authorization: 'Bearer ' + userStore.token,
-      },
-      data: {
-        longLink:
-          'https://www.google.com/search?q=calzoncillos+con+relleno+gl%C3%BAteos+hombre&rlz=1C1GCEA_enES989ES1046&oq=&gs_lcrp=EgZjaHJvbWUqCQgBECMYJxjqAjIJCAAQIxgnGOoCMgkIARAjGCcY6gIyCQgCECMYJxjqAjIJCAMQIxgnGOoCMgkIBBAjGCcY6gIyCQgFECMYJxjqAjIJCAYQIxgnGOoCMgkIBxAjGCcY6gLSAQkxNjE0ajBqMTWoAgiwAgHxBZKQZb6It8hZ8QWSkGW-iLfIWQ&sourceid=chrome&ie=UTF-8',
-      },
-    })
-    console.log(res.data)
-  } catch (error) {
-    console.log(error)
-  }
-}
-// }
-
-// refreshToken()
+const useLink = useLinkStore()
 </script>
