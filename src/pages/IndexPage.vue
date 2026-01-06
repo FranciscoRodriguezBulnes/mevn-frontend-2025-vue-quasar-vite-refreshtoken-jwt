@@ -1,9 +1,9 @@
 <template>
   <q-page padding>
-    <add-link />
+    <add-link class="q-mb-xl" />
     <!-- <pre>{{ JSON.stringify(useLink.links, null, 2) }}</pre> -->
     <template v-for="link in useLink.links" :key="link._id">
-      <link-card />
+      <link-card :link="link"/>
     </template>
   </q-page>
 </template>
